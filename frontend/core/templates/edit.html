@@ -1,18 +1,9 @@
 {% extends 'base.html' %} {% load static %} {% block content %}
 
-
-{% if messages %}
-  {% for message in messages %}
-    <div class="alert alert-success" role="alert">
-      {{message}}
-    </div>
-  {% endfor %}
-{% endif %}
-
-<p>Add Item</p>
+<p>Edit Item</p>
 <br />
 
-<form action="{% url 'add' %}" method="POST">
+<form action="{% url 'edit' data.id %}" method="POST">
   {% csrf_token %}
   <div class="mb-3">
     <label for="item-name" class="form-label">Item Name</label>
@@ -21,7 +12,7 @@
       type="text"
       class="form-control"
       id="item-name"
-      placeholder="Item name"
+      value= "{{data.name}}"
       required
     />
     <label for="item-desc" class="form-label">Item Description</label>
@@ -30,7 +21,7 @@
       type="text"
       class="form-control"
       id="item-desc"
-      placeholder="Item description"
+      value= "{{data.description}}"
       required
     />
     <label for="stock" class="form-label">Stock</label>
@@ -39,8 +30,8 @@
       type="number"
       class="form-control"
       id="stock"
-      placeholder="Stock"
-      min="1"
+      value= {{data.stock}}
+      min="0"
       required
     />
   </div>
@@ -52,5 +43,4 @@
     <a href="{% url 'administrator' %}" class="btn btn-danger">Go back</a>
   </div>
 </form>
-
 {% endblock content %}

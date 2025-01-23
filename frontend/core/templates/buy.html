@@ -3,10 +3,10 @@
 <p>Buy Item</p>
 <br />
 
-<form action="{% url 'buy' %}" method="POST">
+<form action="{% url 'buy' data.id %}" method="POST">
   {% csrf_token %}
-    <label for="stock" class="form-label">How many of {{item_name}} are you buying?</label>
-    <input type="number" class="form-control" id="stock" placeholder="5" />
+    <label for="stock" class="form-label">How much of {{data.name}} are you buying?</label>
+    <input name="stock" type="number" class="form-control" id="stock" placeholder="1" min="1" max="{{data.stock}}"/>
   </div>
 
   <br />
