@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<p>Customer</p>
+<br />
+
+<div style="display: inline-flex; margin-left: 20px">
+  {% for item in data %}
+  <div class="card" style="width: 18rem; margin-right: 10px">
+    <img src="{% static 'img/item.png' %}" class="card-img-top" alt="" />
+    <div class="card-body">
+      <h5 class="card-title">{{item.name}} <small>(In stock:{{item.stock}})</small></h5>
+      <p class="card-text">{{item.description}}</p>
+      <a href="{% url 'buy' %}" class="btn btn-success">Buy</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<br /><br />
+<a href="{% url 'index' %}"
+  ><button type="button" class="btn btn-secondary">Go back</button></a>
+
+{% endblock content %}
