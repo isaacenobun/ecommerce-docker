@@ -10,7 +10,7 @@ def index(request):
     return render(request, 'index.html', context)
 
 def admin(request):
-    api_url = "http://0.0.0.0:8000/api/v1/item/"
+    api_url = "http://api:8000/api/v1/item/"
     
     try:
         response = requests.get(api_url)
@@ -26,7 +26,7 @@ def admin(request):
 def add(request):
     if request.method=='POST':
         
-        api_url = "http://0.0.0.0:8000/api/v1/item/"
+        api_url = "http://api:8000/api/v1/item/"
         payload = {
             "name": request.POST.get('name'),
             "description": request.POST.get('description'),
@@ -49,7 +49,7 @@ def add(request):
     return render(request, 'add.html')
 
 def edit(request, id):
-    api_url = "http://0.0.0.0:8000/api/v1/item/"+str(id)+"/"
+    api_url = "http://api:8000/api/v1/item/"+str(id)+"/"
     
     if request.method=='POST':
         
@@ -84,7 +84,7 @@ def edit(request, id):
             return JsonResponse({'error': str(e)}, status=500)
         
 def delete(request, id):
-    api_url = "http://0.0.0.0:8000/api/v1/item/"+str(id)+'/'
+    api_url = "http://api:8000/api/v1/item/"+str(id)+'/'
     
     try:
         response = requests.delete(api_url)
@@ -97,7 +97,7 @@ def delete(request, id):
             return JsonResponse({'error': str(e)}, status=500)
         
 def customer(request):
-    api_url = "http://0.0.0.0:8000/api/v1/item/"
+    api_url = "http://api:8000/api/v1/item/"
     
     try:
         response = requests.get(api_url)
@@ -111,7 +111,7 @@ def customer(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 def buy(request, id):
-    api_url = "http://0.0.0.0:8000/api/v1/item/"+str(id)+"/"
+    api_url = "http://api:8000/api/v1/item/"+str(id)+"/"
     
     if request.method=='POST':
         payload = {
