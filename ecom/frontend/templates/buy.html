@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+<p>Buy Item</p>
+<br />
+
+<form action="{% url 'buy' data.id %}" method="POST">
+  {% csrf_token %}
+    <label for="stock" class="form-label">How much of {{data.name}} are you buying?</label>
+    <input name="stock" type="number" class="form-control" id="stock" placeholder="1" min="1" max="{{data.stock}}" required/>
+  </div>
+
+  <br />
+
+  <div>
+    <button type="submit" class="btn btn-success">Confirm</button>
+    <a href="{% url 'customer' %}" class="btn btn-danger">Cancel</a>
+  </div>
+</form>
+
+{% endblock content %}

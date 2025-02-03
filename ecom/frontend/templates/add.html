@@ -1,0 +1,56 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+      {{message}}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<p>Add Item</p>
+<br />
+
+<form action="{% url 'add' %}" method="POST">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="item-name" class="form-label">Item Name</label>
+    <input
+      name="name"
+      type="text"
+      class="form-control"
+      id="item-name"
+      placeholder="Item name"
+      required
+    />
+    <label for="item-desc" class="form-label">Item Description</label>
+    <input
+      name="description"
+      type="text"
+      class="form-control"
+      id="item-desc"
+      placeholder="Item description"
+      required
+    />
+    <label for="stock" class="form-label">Stock</label>
+    <input
+      name="stock"
+      type="number"
+      class="form-control"
+      id="stock"
+      placeholder="Stock"
+      min="1"
+      required
+    />
+  </div>
+
+  <br />
+
+  <div>
+    <button type="submit" class="btn btn-success">Confirm</button>
+    <a href="{% url 'administrator' %}" class="btn btn-danger">Go back</a>
+  </div>
+</form>
+
+{% endblock content %}

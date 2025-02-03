@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% load static %} {% block content %}
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success" role="alert">
+      {{message}}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<p>Customer</p>
+<br />
+
+<div style="display: inline-flex; margin-left: 20px">
+  {% for item in data %}
+  <div class="card" style="width: 18rem; margin-right: 10px">
+    <img src="{% static 'img/item.png' %}" class="card-img-top" alt="" />
+    <div class="card-body">
+      <h5 class="card-title">
+        {{item.name}} {% if item.stock == 0 %}
+        <small>(Out of stock)</small>
+        {% else %}
+        <small>(In stock:{{item.stock}})</small>
+        {% endif %}
+      </h5>
+      <p class="card-text">{{item.description}}</p>
+      {% if item.stock != 0 %}
+      <a href="{% url 'buy' item.id %}" class="btn btn-success">Buy</a>
+      {% else %}
+      <a href="#" class="btn btn-secondary">Re-stocking</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<br /><br />
+<a href="{% url 'index' %}"
+  ><button type="button" class="btn btn-danger">Go back</button></a
+>
+
+{% endblock content %}
