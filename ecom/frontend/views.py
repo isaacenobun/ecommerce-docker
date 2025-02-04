@@ -6,21 +6,72 @@ from django.contrib import messages
 from django.shortcuts import render,redirect
 import requests
 
+# ----------------------------------------------------------------------------
+# Custom function imports
+from .refresh_token import refresh
+
 
 # Create your views here.
 def index(request):
-    context = {}
-    return render(request, 'index.html', context)
+    return render(request, 'index.html')
+
+def login(request):
+    
+    if request.method=='POST':
+        credentials = {
+            'email': request.POST.get('email'),
+            'password': request.POST.get('password')
+        }
+        print (credentials)
+        
+        token_url = "http://localhost:8000/api/v1/token/"
+        
+        try:
+            token_response = requests.post(token_url, json=credentials)
+            token_response.raise_for_status()
+            tokens = token_response.json()
+            
+            access_token = tokens.get("access")
+            refresh_token = tokens.get("refresh")
+            
+            tokens = {
+                'access_token': access_token,
+                'refresh_token': refresh_token
+            }
+            
+            if not access_token or not refresh_token:
+                return JsonResponse({"error": "Failed to obtain tokens"}, status=400)
+            
+            request.session['Authorization'] = f"Bearer {access_token}"
+            return admin(request)
+            
+        except requests.exceptions.RequestException as e:
+            return JsonResponse({"error": str(e)}, status=500)
+    
+    return render(request, 'login.html')
 
 def admin(request):
     api_url = "http://localhost:8000/api/v1/item/"
+    refresh_url = "http://localhost:8000/api/v1/token/refresh/"
+    
+    headers = {
+            "Authorization": request.session['Authorization']
+        }
     
     try:
-        response = requests.get(api_url)
-        response.raise_for_status()
+        response = requests.get(api_url,headers=headers)
+        
+        if response.status_code == 401:
+            new_access_token =  refresh(refresh_url,{"refresh": request.COOKIES.get('refresh_token')})
+            
+            headers["Authorization"] = f"Bearer {new_access_token}"
+            
+            response = requests.get(api_url,headers=headers)
+            
+            context = {'data' : response.json()}
+            return render(request, 'admin.html', context)
         
         context = {'data' : response.json()}
-
         return render(request, 'admin.html', context)
     
     except requests.exceptions.RequestException as e:
@@ -52,7 +103,7 @@ def add(request):
     return render(request, 'add.html')
 
 def edit(request, id):
-    api_url = "http://localhost:8000/api/v1/item/"+str(id)+"/"
+    api_url = f"http://localhost:8000/api/v1/item/{id}/"
     
     if request.method=='POST':
         
@@ -87,7 +138,7 @@ def edit(request, id):
             return JsonResponse({'error': str(e)}, status=500)
         
 def delete(request, id):
-    api_url = "http://localhost:8000/api/v1/item/"+str(id)+'/'
+    api_url = f"http://localhost:8000/api/v1/item/{id}/"
     
     try:
         response = requests.delete(api_url)
@@ -114,7 +165,7 @@ def customer(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 def buy(request, id):
-    api_url = "http://localhost:8000/api/v1/item/"+str(id)+"/"
+    api_url = f"http://localhost:8000/api/v1/item/{id}/"
     
     if request.method=='POST':
         payload = {
